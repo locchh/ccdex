@@ -684,6 +684,16 @@ git merge feature-x
 git merge --no-ff feature-x      # preserve merge commit
 ```
 
+### `git rebase` — Reapply commits on top of another branch
+
+```bash
+git rebase main                  # rebase current branch onto main
+git rebase -i HEAD~3             # interactive rebase for last 3 commits
+git rebase --onto main feature-x # rebase a range of commits
+git rebase --continue            # continue after resolving conflicts
+git rebase --abort               # cancel and return to original state
+```
+
 ### `git log` — Show commit history
 
 ```bash
