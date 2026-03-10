@@ -1,3 +1,4 @@
+## Resources
 
 - [tmux](https://github.com/tmux/tmux/wiki) — Terminal multiplexer for session management
 
