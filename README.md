@@ -14,6 +14,8 @@
 
 - [Official Anthropic Skills](https://github.com/anthropics/skills) — The Swiss Army knife everyone talks about. Brainstorming, debugging, TDD enforcement, execution planning - all with slash commands.
 
+- [Awesome Claude Code](https://awesomeclaude.ai/awesome-claude-code) — A curated list of awesome Claude Code resources
+
 - [30 Community Claude Skills Tested for a Week](https://www.reddit.com/r/ClaudeAI/comments/1ok9v3d/i_tested_30_community_claude_skills_for_a_week/) — Real-world skill reviews from the community
 
 - [Claude Code Tips from 6 Months of Use](https://www.reddit.com/r/ClaudeAI/comments/1oivjvm/claude_code_is_a_beast_tips_from_6_months_of/) — Practical tips and workflows from power users
