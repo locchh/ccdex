@@ -41,3 +41,23 @@
 ### [SkillsMP](https://skillsmp.com/) — Skills marketplace
 
 ### [Claude Marketplaces](https://claudemarketplaces.com/) — Browse and share Claude plugins
+
+## Code Quality Tools
+
+[Ruff](https://github.com/astral-sh/ruff)
+
+[myPy](https://mypy.readthedocs.io/en/stable/)
+
+[PMD](https://github.com/pmd/pmd)
+
+[Semgrep](https://github.com/semgrep/semgrep)
+
+[CodeQL](https://codeql.github.com/)
+
+[SonarQube](https://www.sonarqube.org/)
+
+[VeraCode](https://www.veracode.com/)
+
+[Coverity](https://www.blackduck.com/static-analysis-tools-sast/coverity.html)
+
+[BlackDuck](https://www.blackduck.com/)
