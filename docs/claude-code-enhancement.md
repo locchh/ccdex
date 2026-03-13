@@ -1,6 +1,6 @@
 # Claude Code Enhancement
 
-## Ralph Loop
+## 🔄 Ralph Loop
 
 ### [How to Ralph Wiggum](https://github.com/ghuntley/how-to-ralph-wiggum#)
 
@@ -13,7 +13,7 @@
 ### [ralphmad](https://github.com/hieutrtr/ralphmad)
 
 
-## Spec-Driven Development
+## 📋 Spec-Driven Development
 
 ### [Plannotator](https://plannotator.ai/) — AI-assisted planning and annotation
 
@@ -27,7 +27,7 @@
 
 ### [ai1-skills](https://github.com/hieutrtr/ai1-skills) — Community-built skill collection on GitHub
 
-## Online Resources
+## 🌐 Online Resources
 
 ### [Superpowers](https://github.com/obra/superpowers) — A collection of skills for Claude Code
 
@@ -41,7 +41,7 @@
 
 ### [Claude Marketplaces](https://claudemarketplaces.com/) — Browse and share Claude plugins
 
-## Code Quality Tools
+## 🔍 Code Quality Tools
 
 ### [Ruff](https://github.com/astral-sh/ruff)
 
