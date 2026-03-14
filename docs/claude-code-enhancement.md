@@ -4,6 +4,28 @@
 
 ### [How to Ralph Wiggum](https://github.com/ghuntley/how-to-ralph-wiggum#)
 
+#### Concepts
+
+| Term                    | Definition                                                      |
+| ----------------------- | --------------------------------------------------------------- |
+| _Job to be Done (JTBD)_ | High-level user need or outcome                                 |
+| _Topic of Concern_      | A distinct aspect/component within a JTBD                       |
+| _Spec_                  | Requirements doc for one topic of concern (`specs/FILENAME.md`) |
+| _Task_                  | Unit of work derived from comparing specs to code               |
+
+_Relationships:_
+
+- 1 JTBD → multiple topics of concern
+- 1 topic of concern → 1 spec
+- 1 spec → multiple tasks (specs are larger than tasks)
+
+_Example:_
+
+- JTBD: "Help designers create mood boards"
+- Topics: image collection, color extraction, layout, sharing
+- Each topic → one spec file
+- Each spec → many tasks in implementation plan
+
 #### Structure
 
 ```
@@ -115,6 +137,8 @@ while true; do
     echo -e "\n\n======================== LOOP $ITERATION ========================\n"
 done
 ```
+
+#### Key Principles
 
 ### [Ralph Loop Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/ralph-loop)
 
