@@ -26,7 +26,7 @@ project-root/
 while :; do cat PROMPT.md | claude --dangerously-skip-permissions; done
 ```
 
-The mechanism:
+**The mechanism**:
 
 1. Bash loop runs → feeds `PROMPT.md` to claude
 2. PROMPT.md instructs → "Study `specs/`, `src/`, `IMPLEMENTATION_PLAN.md` and choose the most important thing, Do it and update `IMPLEMENTATION_PLAN.md`"
