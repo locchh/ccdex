@@ -4,6 +4,118 @@
 
 ### [How to Ralph Wiggum](https://github.com/ghuntley/how-to-ralph-wiggum#)
 
+#### Structure
+
+```
+project-root/
+├── loop.sh                         # Ralph loop script
+├── PROMPT_build.md                 # Build mode instructions
+├── PROMPT_plan.md                  # Plan mode instructions
+├── AGENTS.md                       # Operational guide loaded each iteration
+├── IMPLEMENTATION_PLAN.md          # Prioritized task list (generated/updated by Ralph)
+├── specs/                          # Requirement specs (one per JTBD topic)
+│   ├── [jtbd-topic-a].md
+│   └── [jtbd-topic-b].md
+├── src/                            # Application source code
+└── src/lib/                        # Shared utilities & components
+```
+
+#### Simple Ralph Loop
+
+```bash
+while :; do cat PROMPT.md | claude --dangerously-skip-permissions; done
+```
+
+The mechanism:
+
+1. Bash loop runs → feeds `PROMPT.md` to claude
+2. PROMPT.md instructs → "Study `specs/`, `src/`, `IMPLEMENTATION_PLAN.md` and choose the most important thing, Do it and update `IMPLEMENTATION_PLAN.md`"
+3. Agent completes one task → updates `IMPLEMENTATION_PLAN.md` on disk, commits, exits
+4. Bash loop restarts immediately → fresh context window
+5. Agent reads updated plan → picks next most important thing
+
+**Key insight:** The `IMPLEMENTATION_PLAN.md` file persists on disk between iterations and acts as shared state between otherwise isolated loop executions. Each iteration deterministically loads the same files (`PROMPT.md` + `AGENTS.md` + `specs/*`) and reads the current state from disk.
+
+#### Enhanced Ralph Loop
+
+Wraps core loop with mode selection (plan/build), max-iterations support, and git push after each iteration. This enhancement uses two saved prompt files:
+
+- `PROMPT_plan.md` - Planning mode (gap analysis, generates/updates plan)
+- `PROMPT_build.md` - Building mode (implements from plan)
+
+```bash
+#!/bin/bash
+# Usage: ./loop.sh [plan] [max_iterations]
+# Examples:
+#   ./loop.sh              # Build mode, unlimited iterations
+#   ./loop.sh 20           # Build mode, max 20 iterations
+#   ./loop.sh plan         # Plan mode, unlimited iterations
+#   ./loop.sh plan 5       # Plan mode, max 5 iterations
+
+# Parse arguments
+if [ "$1" = "plan" ]; then
+    # Plan mode
+    MODE="plan"
+    PROMPT_FILE="PROMPT_plan.md"
+    MAX_ITERATIONS=${2:-0}
+elif [[ "$1" =~ ^[0-9]+$ ]]; then
+    # Build mode with max iterations
+    MODE="build"
+    PROMPT_FILE="PROMPT_build.md"
+    MAX_ITERATIONS=$1
+else
+    # Build mode, unlimited (no arguments or invalid input)
+    MODE="build"
+    PROMPT_FILE="PROMPT_build.md"
+    MAX_ITERATIONS=0
+fi
+
+ITERATION=0
+CURRENT_BRANCH=$(git branch --show-current)
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Mode:   $MODE"
+echo "Prompt: $PROMPT_FILE"
+echo "Branch: $CURRENT_BRANCH"
+[ $MAX_ITERATIONS -gt 0 ] && echo "Max:    $MAX_ITERATIONS iterations"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Verify prompt file exists
+if [ ! -f "$PROMPT_FILE" ]; then
+    echo "Error: $PROMPT_FILE not found"
+    exit 1
+fi
+
+while true; do
+    if [ $MAX_ITERATIONS -gt 0 ] && [ $ITERATION -ge $MAX_ITERATIONS ]; then
+        echo "Reached max iterations: $MAX_ITERATIONS"
+        break
+    fi
+
+    # Run Ralph iteration with selected prompt
+    # -p: Headless mode (non-interactive, reads from stdin)
+    # --dangerously-skip-permissions: Auto-approve all tool calls (YOLO mode)
+    # --output-format=stream-json: Structured output for logging/monitoring
+    # --model opus: Primary agent uses Opus for complex reasoning (task selection, prioritization)
+    #               Can use 'sonnet' in build mode for speed if plan is clear and tasks well-defined
+    # --verbose: Detailed execution logging
+    cat "$PROMPT_FILE" | claude -p \
+        --dangerously-skip-permissions \
+        --output-format=stream-json \
+        --model opus \
+        --verbose
+
+    # Push changes after each iteration
+    git push origin "$CURRENT_BRANCH" || {
+        echo "Failed to push. Creating remote branch..."
+        git push -u origin "$CURRENT_BRANCH"
+    }
+
+    ITERATION=$((ITERATION + 1))
+    echo -e "\n\n======================== LOOP $ITERATION ========================\n"
+done
+```
+
 ### [Ralph Loop Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/ralph-loop)
 
 ### [Ralph](https://github.com/snarktank/ralph)
