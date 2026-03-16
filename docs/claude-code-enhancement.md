@@ -42,8 +42,7 @@ project-root/
 └── src/lib/                        # Shared utilities & components
 ```
 
-Explanation:
-
+Explanation: 
 - [loop.sh](https://github.com/ghuntley/how-to-ralph-wiggum?tab=readme-ov-file#loopsh): The outer loop script that orchestrates Ralph iterations.
 - [PROMPT_build.md](https://github.com/ghuntley/how-to-ralph-wiggum?tab=readme-ov-file#prompt_planmd-template): The instruction set for each loop iteration in build mode.
 - [PROMPT_plan.md](https://github.com/ghuntley/how-to-ralph-wiggum?tab=readme-ov-file#prompt_planmd-template): The instruction set for each loop iteration in plan mode.
@@ -52,37 +51,28 @@ Explanation:
 - [specs/](https://github.com/ghuntley/how-to-ralph-wiggum?tab=readme-ov-file#specs): One markdown file per topic of concern. These are the source of truth for what should be built.
 - [src/, src/lib/](https://github.com/ghuntley/how-to-ralph-wiggum?tab=readme-ov-file#src-and-srclib): Application source code and shared utilities/components.
 
-### Workflow
+#### Workflow
 
 ```mermaid
 flowchart TD
-    A[Idea] --> B
+      A[Idea] --> B[Break into topics]
+      B --> C[Write specs/*.md]
+      C --> D[PLANNING MODE\nRead specs + code\nWrite IMPLEMENTATION_PLAN.md]
+      D --> E
+                                                                                                                                                                 
+      subE[BUILDING MODE]             
+      subgraph subE[BUILDING MODE]
+          E[Read specs + plan] --> F[Pick a task]
+          F --> G[Implement]
+          G --> H{Tests pass?}
+          H -- No --> G
+          H -- Yes --> I[Commit + update plan]
+      end
 
-    subgraph BRAINSTORM[BRAINSTORMING MODE — Human + LLM conversation]
-        B[Jobs to Be Done - JTBD] --> C["Topics of Concern<br/>one per distinct aspect"]
-        C --> D["Write specs/*.md<br/>one file per topic"]
-    end
-
-    D --> E
-
-    subgraph PLAN[PLANNING MODE — PROMPT_plan.md + AGENTS.md]
-        E["Gap analysis<br/>specs vs code"] --> F[Write IMPLEMENTATION_PLAN.md]
-    end
-
-    F --> G
-
-    subgraph BUILD[BUILDING MODE — PROMPT_build.md + AGENTS.md]
-        G[Read specs + IMPLEMENTATION_PLAN.md] --> H[Pick a task]
-        H --> I[Implement]
-        I --> J{Tests pass?}
-        J -- No --> I
-        J -- Yes --> K[Commit + update plan]
-    end
-
-    K --> L[Context cleared]
-    L --> M{Plan done?}
-    M -- No --> G
-    M -- Yes --> N[Done]
+      I --> J[Context cleared]
+      J --> K{Plan done?}
+      K -- No --> E
+      K -- Yes --> L[Done]
 ```
 
 **[Phase 1. Define Requirements (LLM conversation)](https://github.com/ghuntley/how-to-ralph-wiggum?tab=readme-ov-file#phase-1-define-requirements-llm-conversation)**
@@ -239,6 +229,59 @@ done
 - The plan is disposable — regenerate it when wrong rather than forcing a flawed strategy
 
 ### [Ralph Loop Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/ralph-loop)
+
+Install:
+
+```bash
+# Open Claude interactive mode
+claude
+# Open plugin menu
+/plugin
+# Choose "Ralph Loop"
+```
+
+ Ralph Loop brings the Ralph Wiggum technique into your current Claude Code session using a stop hook instead of an external bash loop.
+
+**Core mechanic:** The same prompt is fed to Claude repeatedly. Claude sees its own previous work in files/git history each iteration and builds incrementally toward the goal.
+
+---
+
+#### Commands
+
+**Start a loop:**
+```bash
+/ralph-loop "your task description" [OPTIONS]
+```
+
+**Options:**
+- `--max-iterations <n>` — stop after N iterations
+- `--completion-promise <text>` — stop when Claude outputs this phrase in a `<promise>` tag
+
+**Cancel a loop:**
+```bash
+/cancel-ralph
+```
+
+---
+
+#### Completion Signal
+
+To end the loop, Claude must output:
+```html
+<promise>TASK COMPLETE</promise>
+```
+
+Without this (or `--max-iterations`), the loop runs indefinitely.
+
+---
+
+#### When to use
+
+| Good for | Not good for |
+|----------|--------------|
+| Well-defined tasks with clear success criteria | Tasks needing human judgment |
+| Iterative refinement & self-correction | One-shot operations |
+| Greenfield projects | Unclear success criteria |
 
 ### [Ralph](https://github.com/snarktank/ralph)
 
