@@ -57,12 +57,12 @@ Explanation:
 ```mermaid
 flowchart TD
     A[Idea] --> B[Jobs to Be Done - JTBD]
-    B --> C[Topics of Concern\none per distinct aspect]
-    C --> D["Write specs/*.md\none file per topic"]
+    B --> C["Topics of Concern<br/>one per distinct aspect"]
+    C --> D["Write specs/*.md<br/>one file per topic"]
     D --> E
 
     subgraph PLAN[PLANNING MODE — PROMPT_plan.md + AGENTS.md]
-        E[Gap analysis\nspecs vs code] --> F[Write IMPLEMENTATION_PLAN.md]
+        E["Gap analysis<br/>specs vs code"] --> F[Write IMPLEMENTATION_PLAN.md]
     end
 
     F --> G
