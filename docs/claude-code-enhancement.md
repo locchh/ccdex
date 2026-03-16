@@ -26,7 +26,7 @@ _Example:_
 - Each topic → one spec file
 - Each spec → many tasks in implementation plan
 
-#### Structure
+#### Structure of the Project
 
 ```
 project-root/
