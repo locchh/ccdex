@@ -531,6 +531,16 @@ pkill firefox
 pkill -9 nginx                   # force kill by name
 ```
 
+### `pstree` — Display processes in a tree format
+
+```bash
+pstree                           # tree of all processes
+pstree -p                        # show PIDs
+pstree -u                        # show usernames
+pstree 1234                      # tree rooted at PID 1234
+pstree username                  # tree for a specific user
+```
+
 ---
 
 ## <a id="13-services"></a>13. Services [↑](#table-of-contents)
