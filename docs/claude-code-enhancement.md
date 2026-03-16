@@ -243,7 +243,78 @@ claude
 
 Ralph Loop brings the Ralph Wiggum technique into your current Claude Code session using a stop hook instead of an external bash loop.
 
-**Core mechanic:** The same prompt is fed to Claude repeatedly. Claude sees its own previous work in files/git history each iteration and builds incrementally toward the goal.
+**Core mechanic:** The same prompt is fed to Claude repeatedly. Claude sees its own previous work in files/git history each iteration and builds incrementally toward the goal. Each iteration:
+
+1. Claude receives the SAME prompt
+2. Works on the task, modifying files
+3. Tries to exit
+4. Stop hook intercepts and feeds the same prompt again
+5. Claude sees its previous work in the files
+6. Iteratively improves until completion
+
+The technique is described as "deterministically bad in an undeterministic world" - failures are predictable, enabling systematic improvement through prompt tuning.
+
+#### Architecture
+
+| File                          | Purpose                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| `scripts/setup-ralph-loop.sh` | Parses CLI args, creates the state file, outputs initial prompt           |
+| `hooks/stop-hook.sh`          | The core engine — intercepts session exit and feeds the prompt back       |
+| `hooks/hooks.json`            | Registers the stop hook on the Stop event                                 |
+| `commands/ralph-loop.md`      | `/ralph-loop` slash command — runs setup script, then hands off to Claude |
+| `commands/cancel-ralph.md`    | `/cancel-ralph` slash command — removes state file to cancel the loop     |
+| `commands/help.md`            | `/help` command — explains the plugin                                     |
+
+#### How It Works
+
+**1. Startup** (`/ralph-loop "prompt" --max-iterations N --completion-promise "TEXT"`)
+
+`setup-ralph-loop.sh` runs and creates `.claude/ralph-loop.local.md`, a markdown file with YAML frontmatter:
+
+```yaml
+---
+active: true
+iteration: 1
+session_id: <session_id>
+max_iterations: 20
+completion_promise: "DONE"
+started_at: "2026-03-17T..."
+---
+<the user's prompt>
+```
+
+Claude then works on the task normally.
+
+**2. The Loop** (`stop-hook.sh`)
+
+When Claude tries to exit the session, the Stop hook fires. It:
+
+1. Checks if `.claude/ralph-loop.local.md` exists → if not, allows exit
+2. **Session isolation:** reads `session_id` from state file and compares with `$HOOK_INPUT.session_id` → if different session started the loop, allows exit (prevents cross-session interference)
+3. Validates `iteration` and `max_iterations` are numeric (safeguard against corrupted state)
+4. Checks **max iterations:** if `iteration >= max_iterations`, deletes state file and allows exit
+5. Checks the **transcript:** reads the JSONL transcript file, extracts the last assistant text block
+6. Checks **completion promise:** uses Perl regex to find `<promise>TEXT</promise>` in the last output. If it matches, exits cleanly
+7. **Continues the loop:** increments iteration, updates the state file atomically (via temp file + `mv`), then outputs:
+
+```json
+{
+  "decision": "block",
+  "reason": "<the original prompt>",
+  "systemMessage": "🔄 Ralph iteration 2 | To stop: output <promise>DONE</promise>"
+}
+```
+
+The `"decision": "block"` response prevents Claude from exiting — and `"reason"` is the prompt fed back as Claude's next task.
+
+#### Key Design Decisions
+
+- **Same prompt every iteration** — Claude's "improvement" comes from seeing its own modified files and git history, not from the prompt changing
+- **State in a project-scoped file** — `.claude/ralph-loop.local.md` (`.local.md` suffix signals it's gitignored/local)
+- **Session isolation** — `session_id` field prevents the hook from hijacking other Claude sessions in the same project
+- **Atomic state update** — temp file + `mv` prevents corruption during iteration counter increment
+- **Completion via `<promise>` tags** — Claude must output `<promise>DONE</promise>` (only when true); exact string match using `=` (not `==`) avoids glob expansion issues with special chars
+- **Safety** — `--max-iterations` is the escape hatch; without it OR a completion promise, the loop runs infinitely
 
 #### Stop Hook Mechanism
 
@@ -323,68 +394,6 @@ Without this (or `--max-iterations`), the loop runs indefinitely.
 2. Incremental Goals
 3. Self-Correction
 4. Escape Hatches: Always use `--max-iterations` as a safety net to prevent infinite loops on impossible tasks
-
-#### Architecture
-
-| File                          | Purpose                                                                   |
-| ----------------------------- | ------------------------------------------------------------------------- |
-| `scripts/setup-ralph-loop.sh` | Parses CLI args, creates the state file, outputs initial prompt           |
-| `hooks/stop-hook.sh`          | The core engine — intercepts session exit and feeds the prompt back       |
-| `hooks/hooks.json`            | Registers the stop hook on the Stop event                                 |
-| `commands/ralph-loop.md`      | `/ralph-loop` slash command — runs setup script, then hands off to Claude |
-| `commands/cancel-ralph.md`    | `/cancel-ralph` slash command — removes state file to cancel the loop     |
-| `commands/help.md`            | `/help` command — explains the plugin                                     |
-
-#### How It Works
-
-**1. Startup** (`/ralph-loop "prompt" --max-iterations N --completion-promise "TEXT"`)
-
-`setup-ralph-loop.sh` runs and creates `.claude/ralph-loop.local.md`, a markdown file with YAML frontmatter:
-
-```yaml
----
-active: true
-iteration: 1
-session_id: <session_id>
-max_iterations: 20
-completion_promise: "DONE"
-started_at: "2026-03-17T..."
----
-<the user's prompt>
-```
-
-Claude then works on the task normally.
-
-**2. The Loop** (`stop-hook.sh`)
-
-When Claude tries to exit the session, the Stop hook fires. It:
-
-1. Checks if `.claude/ralph-loop.local.md` exists → if not, allows exit
-2. **Session isolation:** reads `session_id` from state file and compares with `$HOOK_INPUT.session_id` → if different session started the loop, allows exit (prevents cross-session interference)
-3. Validates `iteration` and `max_iterations` are numeric (safeguard against corrupted state)
-4. Checks **max iterations:** if `iteration >= max_iterations`, deletes state file and allows exit
-5. Checks the **transcript:** reads the JSONL transcript file, extracts the last assistant text block
-6. Checks **completion promise:** uses Perl regex to find `<promise>TEXT</promise>` in the last output. If it matches, exits cleanly
-7. **Continues the loop:** increments iteration, updates the state file atomically (via temp file + `mv`), then outputs:
-
-```json
-{
-  "decision": "block",
-  "reason": "<the original prompt>",
-  "systemMessage": "🔄 Ralph iteration 2 | To stop: output <promise>DONE</promise>"
-}
-```
-
-The `"decision": "block"` response prevents Claude from exiting — and `"reason"` is the prompt fed back as Claude's next task.
-
-#### Key Design Decisions
-
-- **Same prompt every iteration** — Claude's "improvement" comes from seeing its own modified files and git history, not from the prompt changing
-- **State in a project-scoped file** — `.claude/ralph-loop.local.md` (`.local.md` suffix signals it's gitignored/local)
-- **Session isolation** — `session_id` field prevents the hook from hijacking other Claude sessions in the same project
-- **Atomic state update** — temp file + `mv` prevents corruption during iteration counter increment
-- **Completion via `<promise>` tags** — Claude must output `<promise>DONE</promise>` (only when true); exact string match using `=` (not `==`) avoids glob expansion issues with special chars
-- **Safety** — `--max-iterations` is the escape hatch; without it OR a completion promise, the loop runs infinitely
 
 ### [Ralph](https://github.com/snarktank/ralph)
 
