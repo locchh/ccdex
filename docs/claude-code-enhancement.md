@@ -42,7 +42,8 @@ project-root/
 └── src/lib/                        # Shared utilities & components
 ```
 
-Explanation: 
+Explanation:
+
 - [loop.sh](https://github.com/ghuntley/how-to-ralph-wiggum?tab=readme-ov-file#loopsh): The outer loop script that orchestrates Ralph iterations.
 - [PROMPT_build.md](https://github.com/ghuntley/how-to-ralph-wiggum?tab=readme-ov-file#prompt_planmd-template): The instruction set for each loop iteration in build mode.
 - [PROMPT_plan.md](https://github.com/ghuntley/how-to-ralph-wiggum?tab=readme-ov-file#prompt_planmd-template): The instruction set for each loop iteration in plan mode.
@@ -59,8 +60,8 @@ flowchart TD
       B --> C[Write specs/*.md]
       C --> D[PLANNING MODE\nRead specs + code\nWrite IMPLEMENTATION_PLAN.md]
       D --> E
-                                                                                                                                                                 
-      subE[BUILDING MODE]             
+
+      subE[BUILDING MODE]
       subgraph subE[BUILDING MODE]
           E[Read specs + plan] --> F[Pick a task]
           F --> G[Implement]
@@ -240,54 +241,94 @@ claude
 # Choose "Ralph Loop"
 ```
 
- Ralph Loop brings the Ralph Wiggum technique into your current Claude Code session using a stop hook instead of an external bash loop.
+Ralph Loop brings the Ralph Wiggum technique into your current Claude Code session using a stop hook instead of an external bash loop.
 
 **Core mechanic:** The same prompt is fed to Claude repeatedly. Claude sees its own previous work in files/git history each iteration and builds incrementally toward the goal.
 
----
+#### Stop Hook Mechanism
+
+```mermaid
+flowchart TD
+    A["/ralph-loop prompt"] --> B["Create .claude/ralph-loop.local.md<br/>iteration, max_iterations, completion_promise, session_id, prompt"]
+    B --> C[Claude works on task]
+    C --> D[Claude tries to exit]
+    D --> E[stop-hook.sh fires]
+
+    subgraph HOOK[Stop Hook Logic]
+        E --> F{State file exists?}
+        F -- No --> G[Allow exit]
+        F -- Yes --> H{Same session_id?}
+        H -- No --> G
+        H -- Yes --> I{Max iterations reached?}
+        I -- Yes --> G
+        I -- No --> J["Read transcript JSONL<br/>extract last assistant text"]
+        J --> K{"&lt;promise&gt; tag matches?"}
+        K -- Yes --> G
+        K -- No --> L["Increment iteration<br/>update state file"]
+        L --> M["Output decision: block<br/>reason: same prompt<br/>systemMessage: iteration info"]
+    end
+
+    M --> N[Claude Code blocks exit<br/>injects prompt as next message]
+    N --> C
+    G --> O[Loop ends / session exits]
+```
 
 #### Commands
 
 **Start a loop:**
+
 ```bash
 /ralph-loop "your task description" [OPTIONS]
 ```
 
 **Options:**
+
 - `--max-iterations <n>` — stop after N iterations
 - `--completion-promise <text>` — stop when Claude outputs this phrase in a `<promise>` tag
 
 **Cancel a loop:**
+
 ```bash
 /cancel-ralph
 ```
 
----
-
 #### Completion Signal
 
 To end the loop, Claude must output:
+
 ```html
 <promise>TASK COMPLETE</promise>
 ```
 
 Without this (or `--max-iterations`), the loop runs indefinitely.
 
----
-
 #### When to use
 
-| Good for | Not good for |
-|----------|--------------|
+| Good for                                       | Not good for                 |
+| ---------------------------------------------- | ---------------------------- |
 | Well-defined tasks with clear success criteria | Tasks needing human judgment |
-| Iterative refinement & self-correction | One-shot operations |
-| Greenfield projects | Unclear success criteria |
+| Iterative refinement & self-correction         | One-shot operations          |
+| Greenfield projects                            | Unclear success criteria     |
+
+#### Philosophy
+
+1. **Iteration > Perfection** - Don't aim for perfect on first try. Let the loop refine the work.
+2. **Failures Are Data** - "Deterministically bad" means failures are predictable and informative. Use them to tune prompts.
+3. **Operator Skill Matters** - Success depends on writing good prompts, not just having a good model.
+4. **Persistence Wins** - Keep trying until success. The loop handles retry logic automatically.
+
+#### Best Practices
+
+1. Clear Completion Criteria
+2. Incremental Goals
+3. Self-Correction
+4. Escape Hatches: Always use `--max-iterations` as a safety net to prevent infinite loops on impossible tasks
 
 ### [Ralph](https://github.com/snarktank/ralph)
 
-### [Bmalph](https://github.com/LarsCowe/bmalph)
-
 ### [ralphmad](https://github.com/hieutrtr/ralphmad)
+
+### [Bmalph](https://github.com/LarsCowe/bmalph)
 
 ## 📋 Spec-Driven Development
 
