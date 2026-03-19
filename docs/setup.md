@@ -138,15 +138,35 @@ MKDOCS_LLMSTXT_SKIP_FULL=1 mkdocs build
 
 ---
 
+## Search
+
+Search is **built-in and automatic** via the `search` plugin in mkdocs.yml.
+
+- **Indexes all** `.md` files in `docs/`
+- **Client-side search** (no backend needed) — search index is prebuilt at `site/search/search_index.json`
+- **Works offline** once the site is loaded
+- **Searches in**: page titles, headings, content
+- **Exclude files** from search if needed:
+
+```yaml
+plugins:
+  - search:
+      exclude:
+        - api/generated/**      # skip large auto-generated folders
+        - admin/**              # or internal-only sections
+```
+
+---
+
 ## What Gets Auto-Generated
 
 | Output | URL | Purpose |
 |---|---|---|
 | Site pages | `yoursite.com/api/core/messages/` | Human browsing |
 | Heading anchors | `yoursite.com/api/core/messages/#dictionary-format` | Deep links to sections |
+| Search index | `yoursite.com/search/search_index.json` | Human/AI search |
 | `llms.txt` | `yoursite.com/llms.txt` | AI page-level index |
 | `llms-full.txt` | `yoursite.com/llms-full.txt` | AI full content dump for RAG |
-| Search index | built-in | Human search |
 
 ---
 
