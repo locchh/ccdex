@@ -324,7 +324,84 @@ The `"decision": "block"` response prevents Claude from exiting — and `"reason
 - **Completion via `<promise>` tags** — Claude must output `<promise>DONE</promise>` (only when true); exact string match using `=` (not `==`) avoids glob expansion issues with special chars
 - **Safety** — `--max-iterations` is the escape hatch; without it OR a completion promise, the loop runs infinitely
 
-#### Stop Hook Mechanism
+#### The Mechanisms
+
+1. **Command Invocation**
+   - User runs `/ralph-loop <prompt> --max-iterations <n> --completion-promise "<promise>"`
+
+2. **Setup Phase**
+   - `setup-ralph-loop.sh` validates arguments
+   - Creates `.claude/ralph-loop.local.md` with YAML frontmatter:
+     - `iteration: 1`
+     - `max_iterations: N`
+     - `completion_promise: TEXT`
+     - `prompt: <original prompt>`
+
+3. **Execution Phase**
+   - Claude works on the task
+   - Modifies files as needed
+
+4. **Exit Attempt**
+   - Claude tries to exit the session
+
+5. **Stop Hook Interception** (automatic)
+   - Stop hook (already registered in `hooks.json`) fires automatically
+   - Reads state from `.claude/ralph-loop.local.md`
+   - Extracts Claude's last output from transcript
+
+6. **Condition Checking**
+   - **Check 1**: Is `max_iterations` reached?
+     - YES → Delete state file, allow exit (stop loop)
+     - NO → Continue to next check
+   - **Check 2**: Is completion promise detected in output?
+     - YES → Delete state file, allow exit (stop loop)
+     - NO → Continue loop
+
+7. **Continue Loop**
+   - Increment iteration counter in state file
+   - Extract original prompt from state file
+   - Inject same prompt back to Claude (via JSON with `"decision": "block"`)
+   - Claude's context continues with new input
+   - Return to step 3 (execution phase)
+
+Loop termination only when:
+- `max_iterations` limit is reached, OR
+- Claude outputs `<promise>COMPLETION_PROMISE</promise>` matching the configured promise
+
+---
+
+Claude code harness mechanism:
+
+```mermaid
+graph TD
+    A["User: /ralph-loop prompt --max-iterations N --completion-promise TEXT"] -->|Invoke| B["setup-ralph-loop.sh"]
+    B -->|Validate Args| C["Create .claude/ralph-loop.local.md<br/>iteration: 1<br/>max_iterations: N<br/>completion_promise: TEXT"]
+    C -->|Initialization Complete| D["Claude Executes Task<br/>(iteration 1)"]
+    D -->|Modify Files<br/>Do Work| E["Claude Tries to Exit"]
+    E -->|Exit Event Fires| F["Stop Hook Intercepts<br/>stop-hook.sh runs"]
+    F -->|Parse State File| G["Read:<br/>• Current Iteration<br/>• Max Iterations<br/>• Completion Promise"]
+    G -->|Read Transcript| H["Extract Last<br/>Claude Output"]
+    H -->|Decision Point 1| I{"Is iteration >=<br/>max_iterations?"}
+    I -->|YES| J["Delete State File<br/>Allow Exit"]
+    I -->|NO| K{"Does output contain<br/><promise>TEXT</promise>?"}
+    K -->|YES<br/>& Matches| J
+    K -->|NO| L["Continue Loop"]
+    L -->|Increment| M["Update .claude/ralph-loop.local.md<br/>iteration: iteration + 1"]
+    M -->|Inject via JSON| N["Return to Claude:<br/>decision: block<br/>reason: original_prompt"]
+    N -->|Same Prompt<br/>Same Context| D
+    J -->|Exit| O["Session Ends"]
+
+    style A fill:#e1f5ff
+    style D fill:#fff9c4
+    style F fill:#f3e5f5
+    style I fill:#ffccbc
+    style K fill:#ffccbc
+    style L fill:#c8e6c9
+    style J fill:#ffcdd2
+    style O fill:#ffcdd2
+```
+
+Stop Hook Workflow:
 
 ```mermaid
 flowchart TD
