@@ -48,14 +48,14 @@ Scopes apply to many Claude Code features:
 
 Each mode makes a different tradeoff between convenience and oversight. Pick the one that matches your task.
 
-| Mode | What Claude can do without asking | Best for |
-|------|-----------------------------------|----------|
-| default | Read files | Getting started, sensitive work |
-| acceptEdits | Read and edit files | Iterating on code you’re reviewing |
-| plan | Read files | Exploring a codebase, planning a refactor |
-| auto | All actions, with background safety checks | Long-running tasks, reducing prompt fatigue |
-| bypassPermissions | All actions, no checks | Isolated containers and VMs only |
-| dontAsk | Only pre-approved tools | Locked-down environments |
+| No | Mode | What Claude can do without asking | Best for |
+|---|------|-----------------------------------|----------|
+| 01 | default | Read files | Getting started, sensitive work |
+| 02 | plan | Read files | Exploring a codebase, planning a refactor |
+| 03 | acceptEdits | Read and edit files | Iterating on code you’re reviewing |
+| 04 | dontAsk | Only pre-approved tools | Locked-down environments |
+| 05 | auto | All actions, with background safety checks | Long-running tasks, reducing prompt fatigue |
+| 06 | bypassPermissions | All actions, no checks | Isolated containers and VMs only |
 
 Example:
 
@@ -80,6 +80,8 @@ Lets Claude execute actions without showing permission prompts by using  a class
 ```bash
 claude --enable-auto-mode
 ```
+
+During a session: press `Shift+Tab` to cycle through `default → acceptEdits → plan → auto`. The current mode appears in the status bar. `auto` does not appear in the cycle until you pass `--enable-auto-mode` at startup
 
 ## <a id="3-memory"></a>3. [Memory](https://code.claude.com/docs/en/memory) [↑](#table-of-contents)
 
