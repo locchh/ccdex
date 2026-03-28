@@ -57,6 +57,12 @@ Each mode makes a different tradeoff between convenience and oversight. Pick the
 | bypassPermissions | All actions, no checks | Isolated containers and VMs only |
 | dontAsk | Only pre-approved tools | Locked-down environments |
 
+Example:
+
+```bash
+claude --permission-mode plan
+```
+
 ### [Plan Mode](https://code.claude.com/docs/en/common-workflows#use-plan-mode-for-safe-code-analysis)
 
 - `Shift-Tab` x2 to toggle thinking mode
