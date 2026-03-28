@@ -42,7 +42,7 @@ Scopes apply to many Claude Code features:
 | Plugins     | `~/.claude/settings.json` | `.claude/settings.json`            | `.claude/settings.local.json`  |
 | CLAUDE.md   | `~/.claude/CLAUDE.md`     | `CLAUDE.md` or `.claude/CLAUDE.md` | `CLAUDE.local.md`              |
 
-## <a id="permission-modes"></a>2. [Permission Modes](https://code.claude.com/docs/en/permission-modes) [↑](#table-of-contents)
+## <a id="2-permission-modes"></a>2. [Permission Modes](https://code.claude.com/docs/en/permission-modes) [↑](#table-of-contents)
 
 ### Available modes
 
@@ -67,7 +67,9 @@ Each mode makes a different tradeoff between convenience and oversight. Pick the
 - `"Think hard"` to force extended thinking
 - Press `Cmd+O` to display the thinking
 
-### [Auto Mode](https://claude.com/blog/auto-mode) lets Claude execute actions without showing permission prompts by using  a classifier runs on Claude Sonnet 4.6 to  Before each action runs, a separate classifier model reviews the conversation and decides whether the action matches what you asked for: it blocks actions that escalate beyond the task scope, target infrastructure the classifier doesn’t recognize as trusted, or appear to be driven by hostile content encountered in a file or web page. Current available on Team plans. [More detail](https://code.claude.com/docs/en/permission-modes#eliminate-prompts-with-auto-mode) 
+### [Auto Mode](https://claude.com/blog/auto-mode)
+
+Lets Claude execute actions without showing permission prompts by using  a classifier runs on Claude Sonnet 4.6 to  Before each action runs, a separate classifier model reviews the conversation and decides whether the action matches what you asked for: it blocks actions that escalate beyond the task scope, target infrastructure the classifier doesn’t recognize as trusted, or appear to be driven by hostile content encountered in a file or web page. Current available on Team plans. [More detail](https://code.claude.com/docs/en/permission-modes#eliminate-prompts-with-auto-mode) 
 
 ```bash
 claude --enable-auto-mode
