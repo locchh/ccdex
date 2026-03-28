@@ -5,7 +5,7 @@
 ## Table of Contents
 
 - [1. Settings](#1-settings)
-- [2. Plan Mode, Extended Thinking](#2-plan-mode-extended-thinking)
+- [2. Permission Modes](#2-permission-modes)
 - [3. Memory](#3-memory)
 - [4. Skills](#4-skills)
 - [5. Subagents](#5-subagents)
@@ -42,12 +42,36 @@ Scopes apply to many Claude Code features:
 | Plugins     | `~/.claude/settings.json` | `.claude/settings.json`            | `.claude/settings.local.json`  |
 | CLAUDE.md   | `~/.claude/CLAUDE.md`     | `CLAUDE.md` or `.claude/CLAUDE.md` | `CLAUDE.local.md`              |
 
-## <a id="2-plan-mode-extended-thinking"></a>2. [Plan Mode](https://code.claude.com/docs/en/common-workflows#use-plan-mode-for-safe-code-analysis), [Extended Thinking](https://code.claude.com/docs/en/common-workflows#use-extended-thinking-thinking-mode) [↑](#table-of-contents)
+## <a id="2-working-mode"></a>2. [Permission Modes](https://code.claude.com/docs/en/permission-modes)) [↑](#table-of-contents)
+
+### Available modes
+
+Each mode makes a different tradeoff between convenience and oversight. Pick the one that matches your task.
+
+| Mode | What Claude can do without asking | Best for |
+|------|-----------------------------------|----------|
+| default | Read files | Getting started, sensitive work |
+| acceptEdits | Read and edit files | Iterating on code you’re reviewing |
+| plan | Read files | Exploring a codebase, planning a refactor |
+| auto | All actions, with background safety checks | Long-running tasks, reducing prompt fatigue |
+| bypassPermissions | All actions, no checks | Isolated containers and VMs only |
+| dontAsk | Only pre-approved tools | Locked-down environments |
+
+### [Plan Mode](https://code.claude.com/docs/en/common-workflows#use-plan-mode-for-safe-code-analysis)
 
 - `Shift-Tab` x2 to toggle thinking mode
 - Press `Ctrl+G` to view and edit plan
+
+[Extended Thinking](https://code.claude.com/docs/en/common-workflows#use-extended-thinking-thinking-mode
+
 - `"Think hard"` to force extended thinking
 - Press `Cmd+O` to display the thinking
+
+### [Auto Mode](https://claude.com/blog/auto-mode) lets Claude execute actions without showing permission prompts by using  a classifier runs on Claude Sonnet 4.6 to  Before each action runs, a separate classifier model reviews the conversation and decides whether the action matches what you asked for: it blocks actions that escalate beyond the task scope, target infrastructure the classifier doesn’t recognize as trusted, or appear to be driven by hostile content encountered in a file or web page. Current available on Team plans. [More detail](https://code.claude.com/docs/en/permission-modes#eliminate-prompts-with-auto-mode) 
+
+```bash
+claude --enable-auto-mode
+```
 
 ## <a id="3-memory"></a>3. [Memory](https://code.claude.com/docs/en/memory) [↑](#table-of-contents)
 
