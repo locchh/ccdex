@@ -19,6 +19,7 @@
 - [13. Claude code on GitHub](#13-claude-code-on-github)
 - [14. Spec-driven](#14-spec-driven) 🔥
 - [15. Ralph-loop](#15-ralph-loop)
+- [16. Status line](#16-status-line)
 
 ## <a id="1-settings"></a>1. [Settings](https://code.claude.com/docs/en/settings) [↑](#table-of-contents)
 
@@ -1296,3 +1297,62 @@ After connecting Claude with GitHub, you can run `/install-github-app` to instal
 ## <a id="15-ralph-loop"></a>15. Ralph Loop [↑](#table-of-contents)
 
 [More detail](./claude-code-enhancement.md#-ralph-loop)
+
+## <a id="16-status-line"></a>16. [Status line](https://code.claude.com/docs/en/statusline) [↑](#table-of-contents)
+
+Prerequisite : `sudo apt install jq`
+
+Setup `~/.claude/settings.json`:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  }
+}
+```
+
+Example of `statusline-command.sh`:
+
+```sh
+#!/usr/bin/env bash
+input=$(cat)
+
+# Context window usage
+ctx_used=$(echo "$input" | jq -r '.context_window.current_usage.input_tokens // 0')
+ctx_total=$(echo "$input" | jq -r '.context_window.context_window_size // 0')
+ctx_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty' 2>/dev/null)
+
+if [ -n "$ctx_pct" ] && [ "$ctx_pct" != "null" ]; then
+  ctx_pct_fmt=$(printf "%.0f" "$ctx_pct" 2>/dev/null || echo "$ctx_pct")
+  ctx_str="${ctx_used}/${ctx_total} (${ctx_pct_fmt}%)"
+else
+  ctx_str="${ctx_used}/${ctx_total}"
+fi
+
+# Session cost (direct field)
+cost=$(echo "$input" | jq -r '.cost.total_cost_usd // 0' | awk '{printf "%.4f", $1}')
+
+# Git branch
+cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // ""')
+if [ -n "$cwd" ] && [ "$cwd" != "null" ]; then
+  git_branch=$(GIT_OPTIONAL_LOCKS=0 git -C "$cwd" rev-parse --abbrev-ref HEAD 2>/dev/null)
+fi
+[ -z "$git_branch" ] && git_branch="no-git"
+
+# Current folder basename
+if [ -n "$cwd" ] && [ "$cwd" != "null" ]; then
+  folder=$(basename "$cwd")
+else
+  folder=$(basename "$PWD")
+fi
+
+# Model name
+model=$(echo "$input" | jq -r '.model.display_name // .model.id // "unknown"')
+
+printf "\033[0;36mctx:\033[0m %s  \033[0;33mcost:\033[0m \$%s  \033[0;35mbranch:\033[0m %s  \033[0;34mdir:\033[0m %s  \033[0;32mmodel:\033[0m %s" \
+  "$ctx_str" "$cost" "$git_branch" "$folder" "$model"
+
+```
+Give permission: `chmod +x ~/.claude/statusline-command.sh`
