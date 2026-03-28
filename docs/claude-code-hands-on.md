@@ -63,6 +63,8 @@ Example:
 claude --permission-mode plan
 ```
 
+`dontAsk` is never in the `Shift+Tab` cycle. `bypassPermissions` appears in the cycle only if you started the session with `--permission-mode bypassPermissions`, `--dangerously-skip-permissions`, or `--allow-dangerously-skip-permissions`.
+
 ### [Plan Mode](https://code.claude.com/docs/en/common-workflows#use-plan-mode-for-safe-code-analysis)
 
 - `Shift-Tab` x2 to toggle thinking mode
