@@ -62,7 +62,7 @@ Each mode makes a different tradeoff between convenience and oversight. Pick the
 - `Shift-Tab` x2 to toggle thinking mode
 - Press `Ctrl+G` to view and edit plan
 
-[Extended Thinking](https://code.claude.com/docs/en/common-workflows#use-extended-thinking-thinking-mode
+[Extended Thinking](https://code.claude.com/docs/en/common-workflows#use-extended-thinking-thinking-mode)
 
 - `"Think hard"` to force extended thinking
 - Press `Cmd+O` to display the thinking
