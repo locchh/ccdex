@@ -14,7 +14,7 @@
 - [8. Hooks](#8-hooks)
 - [9. Plugins](#9-plugins)
 - [10. Manage your session](#10-manage-your-session)
-- [11. Custom slash commands](#11-slash-commands)
+- [11. Slash commands](#11-slash-commands)
 - [12. Worktrees](#12-worktrees)
 - [13. Claude code on GitHub](#13-claude-code-on-github)
 - [14. Spec-driven](#14-spec-driven) 🔥
@@ -1179,9 +1179,9 @@ To reference specific lines from multiple files, use `@file#line-range` syntax i
 
 You can combine multiple file references in a single prompt.
 
-## <a id="11-custom-slash-commands"></a>11. Custom slash commands [↑](#table-of-contents)
+## <a id="11-slash-commands"></a>11. Slash commands [↑](#table-of-contents)
 
-For built-in commands like /help and /compact, see [interactive mode](https://code.claude.com/docs/en/interactive-mode#built-in-commands).
+For built-in commands like `/help` and `/compact`, see [interactive mode](https://code.claude.com/docs/en/interactive-mode#built-in-commands).
 
 Custom slash commands have been merged into skills. A file at `.claude/commands/review.md` and a skill at `.claude/skills/review/SKILL.md` both create `/review` and work the same way. Your existing `.claude/commands/` files keep working. Skills add optional features: a directory for supporting files, frontmatter to [control whether you or Claude invokes them](https://code.claude.com/docs/en/skills#control-who-invokes-a-skill), and the ability for Claude to load them automatically when relevant.
 
