@@ -42,7 +42,7 @@ Scopes apply to many Claude Code features:
 | Plugins     | `~/.claude/settings.json` | `.claude/settings.json`            | `.claude/settings.local.json`  |
 | CLAUDE.md   | `~/.claude/CLAUDE.md`     | `CLAUDE.md` or `.claude/CLAUDE.md` | `CLAUDE.local.md`              |
 
-## <a id="2-working-mode"></a>2. [Permission Modes](https://code.claude.com/docs/en/permission-modes)) [↑](#table-of-contents)
+## <a id="2-working-mode"></a>2. [Permission Modes](https://code.claude.com/docs/en/permission-modes) [↑](#table-of-contents)
 
 ### Available modes
 
