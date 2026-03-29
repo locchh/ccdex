@@ -5,7 +5,7 @@
 Both commands integrate changes from one branch into another, but in different directions and for different purposes.
 
 > **merge** = integrate your work **into** the product (feature → main)
-
+>
 > **rebase** = integrate the product's updates **into** your work (main → feature)
 
 ```
