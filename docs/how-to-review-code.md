@@ -78,7 +78,7 @@ git diff origin/<old-branch> origin/<new-branch>
 
 | Form | Old (`---`) | New (`+++`) |
 |------|------------|------------|
-| `git diff B` (on branch A) | B (argument) | A (current) |
+| `git diff A` (on branch B) | A (argument) | B (current) |
 | `git diff A B` | A (first) | B (second) |
 | `git diff origin/main origin/feature` | origin/main (first) | origin/feature (second) |
 
