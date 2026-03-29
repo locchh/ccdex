@@ -141,7 +141,7 @@ Developers are optimists by nature — they build for futures that rarely arrive
 
 ## Methodologies ( The how to do )
 
-### 1. Waterfall
+### 1. Waterfall - "Do it in order, no going back"
 
 > _"Do it right the first time — in the right order."_
 
@@ -152,7 +152,7 @@ Waterfall treats software like construction: lay the foundation before the walls
 
 ---
 
-### 2. V-Model
+### 2. V-Model - "For every step, define how you'll prove it worked"
 
 > _"For every decision, define how you'll prove it worked."_
 
@@ -163,7 +163,7 @@ An evolution of Waterfall for high-stakes domains. At every stage of development
 
 ---
 
-### 3. Scrum
+### 3. Scrum - "Build a little, show it, improve"
 
 > _"Inspect and adapt."_ — Ken Schwaber & Jeff Sutherland
 
@@ -175,7 +175,7 @@ Scrum broke the long planning horizon into short, repeatable sprints of one to t
 
 ---
 
-### 4. Kanban
+### 4. Kanban - "Finish before you start something new"
 
 > _"Stop starting, start finishing."_ — David Anderson
 
@@ -186,7 +186,7 @@ Where Scrum organizes work into time-boxed sprints, Kanban lets work flow contin
 
 ---
 
-### 5. SAFe
+### 5. SAFe - "Scrum, but for 50 teams"
 
 > _"Align, collaborate, deliver."_
 
@@ -208,7 +208,7 @@ Kent Beck asked a simple question: if code review is good, what if you reviewed 
 
 ---
 
-### 7. Shape Up
+### 7. Shape Up - "Decide how much time it's worth, not how long it takes"
 
 > _"Appetite, not estimates."_ — Ryan Singer
 
@@ -219,7 +219,7 @@ Basecamp grew tired of backlogs that never shrank and estimates that never held.
 
 ---
 
-### 8. RUP
+### 8. RUP - "Waterfall + iteration + formal governance"
 
 > _"Structure the chaos of iterative development."_
 
