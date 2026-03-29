@@ -246,6 +246,28 @@ Reading a diff fluently is a necessary foundation, but senior reviewers go furth
 - **Readability** — is the code clear to the next person who reads it?
 - **Consistency** — does it follow the project's conventions and patterns?
 
+
+The standard PR review workflow:                                                                                                                                             
+
+```bash
+# 1. Get latest remote state
+git fetch                                                                                                                                                                    
+
+# 2. See what commits the feature added
+git log origin/main..origin/feature --oneline                                        
+
+# 3. See the full file changes
+git diff origin/main origin/feature                                                                                                                                          
+
+# 4. Optional: commits + changes together
+git log origin/main..origin/feature --oneline --stat
+```
+Why this order:
+
+- `git log` first — understand the story (how many commits, what they claim to do)
+
+- `git diff` second — verify the actual changes match the commit messages
+ 
 ---
 
 # Part 3 — AI-Assisted Code Review
