@@ -78,7 +78,7 @@ git diff origin/<old-branch> origin/<new-branch>
 
 | Form | Old (`---`) | New (`+++`) |
 |------|------------|------------|
-| `git diff A` (on branch B) | A (argument) | B (current) |
+| `git diff A` (on branch A) | A (argument) | B (current) |
 | `git diff A B` | A (first) | B (second) |
 | `git diff origin/main origin/feature` | origin/main (first) | origin/feature (second) |
 
@@ -305,8 +305,8 @@ Devin Review was built around a specific insight: as AI generates more code, the
 
 Devin Review comes in two modes:
 
-- **Webapp (fast review)** — analyzes the diff directly using a pre-indexed snapshot of the repo for codebase context. No fresh clone. Quick turnaround, good for most PRs.
-- **CLI (`devin-review`) (deep review)** — fetches the PR branch and checks it out into a local git worktree. The Bug Catcher can read any file on demand (`cat`, `grep`, `find`, etc.), giving it full file-level context beyond the diff. More thorough, but requires local setup.
+- **Webapp** — diff-only review. Uses the GitHub API and a pre-indexed snapshot of the repo to power codebase-aware chat ("Ask Devin"). No fresh clone triggered.
+- **CLI (`devin-review`)** — enables "deeper analysis than diff-only review" (Cognition's own words). Fetches the PR branch, checks it out into an isolated local git worktree, and sends the diff to Devin's servers. The Bug Catcher can then run read-only shell commands (`cat`, `grep`, `find`, `ls`, etc.) scoped to that worktree for deeper file-level analysis.
 
 Rather than reading a diff as a flat list of changed lines, it reorganizes changes semantically — grouping related edits together and detecting when code was moved or copied, so those show as relocations rather than full deletes and re-inserts. This makes the diff genuinely easier for a human to read even before the AI analysis begins.
 
@@ -323,7 +323,7 @@ On top of that, an integrated **Bug Catcher** analyzes the PR and categorizes it
 
 **Customization:** Add a `REVIEW.md` to your repository to define which areas need scrutiny, which conventions to enforce, and which files to ignore. Additional glob-pattern rules can be configured in Settings > Review.
 
-**Ref:** [Devin Review](https://app.devin.ai/review) — Cognition AI
+**Ref:** [Devin Review](https://app.devin.ai/review) — Cognition AI | [Docs](https://docs.devin.ai/work-with-devin/devin-review) | [Blog: Devin Review: AI to Stop Slop](https://cognition.ai/blog/devin-review)
 
 ---
 
@@ -362,7 +362,7 @@ Both tools post inline comments on GitHub PRs without blocking existing review w
 
 |                             | Devin Review                               | Claude Code Review                             |
 | --------------------------- | ------------------------------------------ | ---------------------------------------------- |
-| **Source access**           | Webapp (fast): diff + pre-indexed context. CLI (deep): full worktree checkout | GitHub App, full repo on Anthropic infra |
+| **Source access**           | Webapp: diff + pre-indexed context. CLI: local worktree checkout with read-only shell access | GitHub App, full repo on Anthropic infra |
 | **Core idea**               | Reorganize the diff + bug detection        | Multi-agent parallel analysis of full codebase |
 | **Severity system**         | Bugs (severe/non-severe) + Flags           | 🔴 Normal / 🟡 Nit / 🟣 Pre-existing           |
 | **Default scope**           | Bugs and code understanding                | Correctness bugs only                          |
