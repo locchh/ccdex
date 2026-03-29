@@ -278,8 +278,15 @@ git rebase -i origin/main
 
 # Push and open PR
 git push origin feature/TICKET-123-short-description
+# Or
+git push -u origin feature/TICKET-123-short-description
 
 # PR approved → merge on GitHub → done
+git branch -d feature/TICKET-123-short-description
+
+# ↓ Start next feature — cycle repeats from here
+git fetch
+git checkout -b feature/TICKET-456-short-description origin/main
 ```
 
 ### Senior developers never:
