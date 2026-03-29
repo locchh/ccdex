@@ -260,10 +260,10 @@ No harm done — you're back to the state before you started.
 ```bash
 # Clone repo
 git clone ...
-git branch -D main
 
 # Start a new feature
 git checkout -b feature/TICKET-123-short-description origin/main
+git branch -D main
 
 # Do your work
 git add .
