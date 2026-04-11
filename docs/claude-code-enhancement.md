@@ -532,7 +532,7 @@ Without this (or `--max-iterations`), the loop runs indefinitely.
 
 ### [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) — A curated list of awesome skills, hooks, slash-commands, agent orchestrators, applications, and plugins for Claude Code by Anthropic.
 
-### [AI Templates Skills](https://www.aitmpl.com/skills) — Skill templates and examples
+### [Claude code templates](https://www.aitmpl.com/) — Claude code templates
 
 ### [SkillsMP](https://skillsmp.com/) — Skills marketplace
 
