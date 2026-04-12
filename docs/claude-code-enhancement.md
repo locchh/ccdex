@@ -534,6 +534,18 @@ Without this (or `--max-iterations`), the loop runs indefinitely.
 
 ### [Claude code templates](https://www.aitmpl.com/) — Claude code templates
 
+Install:
+
+```bash
+# Execute one
+npx claude-code-templates@latest
+
+# Or install globally
+npm install -g claude-code-templates
+```
+
+[Docs](https://docs.aitmpl.com/introduction)
+
 ### [SkillsMP](https://skillsmp.com/) — Skills marketplace
 
 ### [Claude Marketplaces](https://claudemarketplaces.com/) — Browse and share Claude plugins
