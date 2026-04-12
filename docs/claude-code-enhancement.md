@@ -544,6 +544,58 @@ npx claude-code-templates@latest
 npm install -g claude-code-templates
 ```
 
+Claude Code Templates provides six types of components to supercharge your AI-powered development:
+​
+#### 🤖 Agents (400+)
+AI specialists for specific domains and tasks:
+
+- **Development Team**: Frontend, backend, fullstack developers
+- **Security**: Security auditors, penetration testers
+- **DevOps**: Infrastructure architects, deployment specialists
+- **Data & AI**: Machine learning engineers, data scientists
+- **Documentation**: Technical writers, API documentation experts
+
+#### ⚡ Commands (225+)
+Custom slash commands for common workflows:
+- `/generate-tests` - Generate unit tests for your code
+- `/optimize-bundle` - Analyze and optimize bundle size
+- `/check-security` - Run security audits on dependencies
+- `/setup-ci` - Configure CI/CD pipelines
+
+
+#### 🔌 MCPs (65+)
+External service integrations:
+
+- GitHub, GitLab, Bitbucket
+- PostgreSQL, MySQL, MongoDB
+- Stripe, AWS, OpenAI
+- Docker, Kubernetes, Terraform
+
+#### ⚙️ Settings (60+)
+Claude Code configuration presets:
+
+- Performance optimization
+- Memory management
+- Timeout configurations
+- Output formatting
+
+#### 🪝 Hooks (45+)
+Automation triggers for development workflows:
+
+- Pre-commit validation
+- Post-completion actions
+- Error handling
+- Custom notifications
+
+​
+#### 🎨 Skills (2700+)
+Reusable capabilities with progressive disclosure:
+
+- PDF processing and generation
+- Excel automation
+- Scientific computing (biology, chemistry, medicine)
+- Custom workflow templates
+
 [Docs](https://docs.aitmpl.com/introduction)
 
 ### [SkillsMP](https://skillsmp.com/) — Skills marketplace
@@ -593,3 +645,59 @@ npm install -g claude-code-templates
 - Best overall self-hosted: **MkDocs Material** — fastest build, most complete auto-indexing
 - Best if you need MDX: **Astro Starlight** — close second, good plugin ecosystem
 - Best if budget is available: **Mintlify** — zero config, everything built-in, but no self-hosting
+
+## Routing
+
+[ccflare](https://ccflare.com/) or [better-ccflare](https://github.com/tombii/better-ccflare/)
+
+
+```bash
+# 1. Insall
+git clone https://github.com/snipeship/ccflare
+cd ccflare
+bun install
+# or
+# bunx ccflare
+# or
+# bun install -g ccflare
+
+# 2. Start the server
+bun run ccflare
+# This starts both the server (port 8080) and the TUI dashboard.
+
+# 3. Add accounts (new terminal)
+# Claude Pro account
+bun run apps/tui/src/main.ts --add-account account1 --mode max --tier 5
+
+# Claude Max/Team account
+bun run apps/tui/src/main.ts --add-account account2 --mode max --tier 20
+# Or you can add account on the UI. Repeat for as many accounts as you want.
+
+# 4. Point Claude Code at ccflare 
+export ANTHROPIC_BASE_URL=http://localhost:8080
+# Or add it permanently to your shell (~/.bashrc / ~/.zshrc):
+# echo 'export ANTHROPIC_BASE_URL=http://localhost:8080' >> ~/.zshrc
+
+# 5. Run Claude Code normally
+
+claude
+
+#All requests now go through ccflare and rotate across your accounts automatically.
+
+#Monitor
+# - Web dashboard: http://localhost:8080/dashboard
+# - TUI: already open from step 2 — use arrow keys to navigate screens
+# Other useful commands
+
+# List accounts
+bun run apps/tui/src/main.ts --list                                                                                                                                                   
+
+# Pause an account
+bun run apps/tui/src/main.ts --pause account1
+
+# Remove an account
+bun run apps/tui/src/main.ts --remove account1
+
+# View stats
+bun run apps/tui/src/main.ts --stats
+```
