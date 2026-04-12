@@ -700,4 +700,9 @@ bun run apps/tui/src/main.ts --remove account1
 
 # View stats
 bun run apps/tui/src/main.ts --stats
+
+# To stop
+ps aux | grep ccflare
+# Or lsof -i :8080
+kill <PID> 
 ```
