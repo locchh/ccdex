@@ -1,4 +1,4 @@
-# cc-draft
+# cc-notes
 
 > A curated collection of resources, tools, and references for building with Claude Code.
 
