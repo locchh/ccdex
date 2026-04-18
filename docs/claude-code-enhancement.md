@@ -586,7 +586,6 @@ Automation triggers for development workflows:
 - Post-completion actions
 - Error handling
 - Custom notifications
-
 ​
 #### 🎨 Skills (2700+)
 Reusable capabilities with progressive disclosure:
